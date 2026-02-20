@@ -1,6 +1,17 @@
 @McpService.Api_HostAddress = http://localhost:0
 
-GET {{McpService.Api_HostAddress}}/weatherforecast/
+GET {{McpService.Api_HostAddress}}/health
 Accept: application/json
+
+###
+
+POST {{McpService.Api_HostAddress}}/count/basic
+Content-Type: application/json
+
+{
+  "userStory": "Como analista, quero cadastrar cliente e consultar histórico em sistema externo para gerar relatório.",
+  "det": 12,
+  "ftr": 2
+}
 
 ###

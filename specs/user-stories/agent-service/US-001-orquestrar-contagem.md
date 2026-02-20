@@ -1,8 +1,8 @@
-# UC-001 - Orquestrar Contagem
+# US-001 - Orquestrar Contagem
 ---
 
 ## ID
-`UC-AGENT-001`
+`US-AGENT-001`
 
 ## História de Usuário
 Como analista de métricas, preciso enviar uma solicitação única para que o agente orquestre consulta de contexto e cálculo de contagem.

@@ -1,8 +1,8 @@
-# UC-001 - Contagem Básica
+# US-001 - Contagem Básica
 ---
 
 ## ID
-`UC-MCP-001`
+`US-MCP-001`
 
 ## História de Usuário
 Como analista de métricas, preciso submeter histórias de usuário para obter a contagem automática de Pontos de Função.

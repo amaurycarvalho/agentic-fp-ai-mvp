@@ -1,8 +1,8 @@
-# UC-001 - Consulta à Base Normativa
+# US-001 - Consulta à Base Normativa
 ---
 
 ## ID
-`UC-RAG-001`
+`US-RAG-001`
 
 ## História de Usuário
 Como agente de orquestração, preciso consultar a base normativa para recuperar contexto técnico confiável antes da análise.

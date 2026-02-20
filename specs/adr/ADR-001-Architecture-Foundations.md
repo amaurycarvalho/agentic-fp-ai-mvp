@@ -15,6 +15,7 @@ Definições gerais aplicáveis a todo o projeto.
 ## Decisão
 
 Adotar como fundação:
+
 1. DDD;
 2. Clean Architecture;
 3. Microserviços;
@@ -23,7 +24,10 @@ Adotar como fundação:
 6. IA agêntica desacoplada por MCP e RAG;
 7. Histórias de usuário com TDD/BDD;
 8. Containers por serviço com Docker Compose;
-9. Comunicação interna priorizando gRPC e bordas HTTP conforme contexto.
+9. Comunicação interna priorizando gRPC e bordas HTTP conforme contexto;
+10. Health checks e cenários de resiliência (timeout/retry);
+11. Observabilidade completa;
+12. Hardening de segurança.
 
 ---
 
@@ -52,4 +56,3 @@ evolução independente dos serviços.
 ---
 
 ## Decisões Relacionadas
-

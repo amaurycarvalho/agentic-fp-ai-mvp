@@ -7,7 +7,7 @@
 ## Próxima fase (curto prazo) - Fase 1
 
 - [x] Estrutura base do projeto: criação dos projetos C# dos serviços em `services/` com pastas `src/` e `tests/`, criação dos `Dockerfile` dos serviços e `docker-compose` do projeto;
-- [x] Escrita dos `use-cases/` e `adr/` iniciais dos serviços.
+- [x] Escrita dos `user-stories/` e `adr/` iniciais dos serviços.
 
 ## Fase seguinte (evolução)
 
