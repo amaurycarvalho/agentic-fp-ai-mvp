@@ -191,10 +191,8 @@ sonar-down:
 
 sonar-check:
 	@test -n "$(SONAR_TOKEN)" || { echo "$(RED)❌ SONAR_TOKEN is required - export it (e.g. SONAR_TOKEN=xxx make sonar-check)$(NC)"; exit 1; }
-	@for proj in $(TEST_PROJECTS); do \
-		svc="$$(echo "$$proj" | sed -E 's#services/([^/]+)/.*#\1#')"; \
+	@for svc in $(SERVICES); do \
 		key="$(SONAR_PROJECT_KEY_PREFIX)$$svc"; \
-		name="$$(basename "$$proj" .csproj)"; \
 		echo "$(GREEN)📡 SonarQube analysis: $$key -> $(SONAR_HOST_URL)$(NC)"; \
 		( \
 			trap 'dotnet sonarscanner end /d:sonar.token="$(SONAR_TOKEN)"' EXIT; \
@@ -202,9 +200,9 @@ sonar-check:
 				/d:sonar.host.url="$(SONAR_HOST_URL)" \
 				/d:sonar.token="$(SONAR_TOKEN)" \
 				/v:"$(VERSION)" \
-				/d:sonar.cs.cobertura.reportsPaths="TestResults/$$name/**/coverage.cobertura.xml" \
+				/d:sonar.cs.cobertura.reportsPaths="TestResults/**/coverage.cobertura.xml" \
 				/d:sonar.coverage.exclusions="**/*Tests/**" || exit 1; \
-			$(MAKE) test-sln SLN="$$proj" || exit 1; \
+			$(MAKE) test-sln SLN="$(SOLUTION)" || exit 1; \
 		); \
 		status=$$?; \
 		if [ $$status -ne 0 ]; then exit $$status; fi; \

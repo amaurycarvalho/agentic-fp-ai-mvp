@@ -47,11 +47,8 @@ jobs:
       matrix:
         service:
           - name: agent-service
-            test-proj: services/agent-service/tests/AgentService.Api.Tests/AgentService.Api.Tests.csproj
           - name: mcp-service
-            test-proj: services/mcp-service/tests/McpService.Api.Tests/McpService.Api.Tests.csproj
           - name: rag-service
-            test-proj: services/rag-service/tests/RagService.Api.Tests/RagService.Api.Tests.csproj
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -75,7 +72,7 @@ jobs:
             /d:sonar.coverage.exclusions=**/*Tests/**
 
       - name: Build and test with coverage
-        run: make test-sln SLN="${{ matrix.service.test-proj }}"
+        run: make test-sln SLN=agentic-fp-ai-mvp.sln
 
       - name: SonarCloud end
         if: always()
