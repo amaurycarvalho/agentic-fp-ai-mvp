@@ -155,7 +155,7 @@ Verificações individuais:
 ```bash
 make lint               # formato/análise (dotnet format --verify-no-changes)
 make test               # testes + cobertura
-make coverage-check     # cobertura contra COVERAGE_THRESHOLD (default 80)
+make coverage-check     # cobertura contra COVERAGE_THRESHOLD (default 90)
 make metrics            # linhas de código (LOC) por serviço
 make security           # pacotes vulnerables/deprecated/outdated + Semgrep SAST
 ```

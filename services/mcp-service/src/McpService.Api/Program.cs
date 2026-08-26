@@ -25,3 +25,5 @@ app.MapPost("/count/basic", (CountBasicRequest request, IBasicCountService basic
 });
 
 app.Run();
+
+public partial class Program { }

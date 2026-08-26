@@ -30,7 +30,12 @@ def main() -> int:
 
     root = sys.argv[2] if len(sys.argv) > 2 else "TestResults"
     pattern = f"{root}/**/coverage.cobertura.xml"
-    files = sorted(glob.glob(pattern, recursive=True))
+    files = [
+        path for path in sorted(glob.glob(pattern, recursive=True))
+        # Skip transient/internal directories (e.g. "_recruta-zero_*") that
+        # are not produced by `make test`.
+        if not any(part.startswith("_") for part in path.split("/"))
+    ]
 
     if not files:
         print(f"no coverage reports found under {root!r} "

@@ -10,10 +10,10 @@
 # Single source of truth for image and release version.
 VERSION ?= 1.0.0
 
-# Coverage floor (start lower and tighten). Measured baseline (2026-08-26):
-# ~72% mcp-service (real tests), ~0% agent/rag (placeholder tests) -> overall ~65%.
-# Tighten as real tests land (see rag/agent orchestration changes).
-COVERAGE_THRESHOLD ?= 60
+# Coverage floor (constitution requires >=90% for low-criticality code and
+# >=100% for medium/high criticality). Overall measured: ~98% with real tests
+# on agent/mcp/rag. Tighten further as more logic lands.
+COVERAGE_THRESHOLD ?= 90
 
 # Root solution (contains the 3 MVP services: agent, mcp, rag).
 SOLUTION := agentic-fp-ai-mvp.sln
@@ -44,6 +44,7 @@ install:
 
 test:
 	@echo "$(GREEN)🧪 Running unit tests + coverage (excluding live-stack MCP integration)...$(NC)"
+	@rm -rf TestResults
 	@$(MAKE) test-sln SLN="$(SOLUTION)"
 	@echo "$(GREEN)✅ Tests passed$(NC)"
 
@@ -239,7 +240,7 @@ help:
 	@echo "  make lint             - Verify formatting/analyzers (dotnet format --verify-no-changes)"
 	@echo "  make metrics          - Report Lines of Code per service"
 	@echo "  make coverage         - Run tests and check coverage threshold"
-	@echo "  make coverage-check   - Check coverage against COVERAGE_THRESHOLD (default 80)"
+	@echo "  make coverage-check   - Check coverage against COVERAGE_THRESHOLD (default 90)"
 	@echo "  make security         - Check package vulnerabilities/deprecated/outdated + Semgrep SAST"
 	@echo "  make mutation         - Run Stryker.NET mutation tests (manual, not in CI)"
 	@echo "  make install-quality-tools - Install dotnet-stryker + semgrep"
