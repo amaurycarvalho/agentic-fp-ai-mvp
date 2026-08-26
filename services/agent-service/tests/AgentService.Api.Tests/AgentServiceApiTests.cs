@@ -17,12 +17,12 @@ public class AgentServiceApiTests : IClassFixture<WebApplicationFactory<Program>
     [Fact]
     public async Task Health_ReturnsOk_WithExpectedPayload()
     {
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
 
-        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var root = json.RootElement;
 
         Assert.Equal("agent-service", root.GetProperty("service").GetString());
@@ -34,7 +34,7 @@ public class AgentServiceApiTests : IClassFixture<WebApplicationFactory<Program>
     [Fact]
     public async Task UnknownRoute_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/not-a-route");
+        var response = await _client.GetAsync("/not-a-route", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }

@@ -18,12 +18,12 @@ public class McpServiceApiTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task Health_ReturnsOk_WithExpectedPayload()
     {
-        var response = await _client.GetAsync("/health");
+        var response = await _client.GetAsync("/health", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal("application/json", response.Content.Headers.ContentType?.MediaType);
 
-        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var root = json.RootElement;
 
         Assert.Equal("mcp-service", root.GetProperty("service").GetString());
@@ -37,10 +37,10 @@ public class McpServiceApiTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var payload = new { userStory = "Como analista, preciso cadastrar clientes e armazenar dados no banco." };
 
-        var response = await _client.PostAsJsonAsync("/count/basic", payload);
+        var response = await _client.PostAsJsonAsync("/count/basic", payload, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var result = await response.Content.ReadFromJsonAsync<CountBasicResponse>();
+        var result = await response.Content.ReadFromJsonAsync<CountBasicResponse>(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result!.TransactionalFunctions);
@@ -55,10 +55,10 @@ public class McpServiceApiTests : IClassFixture<WebApplicationFactory<Program>>
     {
         var payload = new { det = 10 };
 
-        var response = await _client.PostAsJsonAsync("/count/basic", payload);
+        var response = await _client.PostAsJsonAsync("/count/basic", payload, TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
         var message = json.RootElement.GetProperty("error").GetString();
         Assert.Contains("userStory", message, StringComparison.OrdinalIgnoreCase);
     }
@@ -66,7 +66,7 @@ public class McpServiceApiTests : IClassFixture<WebApplicationFactory<Program>>
     [Fact]
     public async Task UnknownRoute_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/not-a-route");
+        var response = await _client.GetAsync("/not-a-route", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
