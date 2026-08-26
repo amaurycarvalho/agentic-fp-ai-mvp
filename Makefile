@@ -8,7 +8,7 @@
 # ---------- Variables ----------
 
 # Single source of truth for image and release version.
-VERSION ?= 1.0.0
+VERSION ?= 1.0.1
 
 # Coverage floor (constitution requires >=90% for low-criticality code and
 # >=100% for medium/high criticality). Overall measured: ~98% with real tests

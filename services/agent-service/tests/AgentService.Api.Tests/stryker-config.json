@@ -1,0 +1,9 @@
+{
+  "stryker-config": {
+    "reporters": ["html", "json", "progress"],
+    "thresholds": { "high": 80, "low": 70, "break": 60 },
+    "project": "AgentService.Api.csproj",
+    "coverage-analysis": "off",
+    "test-runner": "mtp"
+  }
+}
