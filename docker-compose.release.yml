@@ -1,0 +1,38 @@
+# docker-compose.release.yml
+# Consumption stack for the service images published in a GitHub Release.
+#
+# Usage (from a Release):
+#   1. Download the `*-service.tar.gz` tarballs and this file;
+#   2. Load + retag each image to `latest`;
+#   3. docker compose -f docker-compose.release.yml up -d
+#
+# Images reference the release tag (<version>); retag to `latest` if you prefer.
+# Swap the `image:` value to the specific version tag you downloaded.
+
+services:
+  agent-service:
+    image: agent-service:latest
+    container_name: agent-service
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    depends_on:
+      - mcp-service
+      - rag-service
+
+  mcp-service:
+    image: mcp-service:latest
+    container_name: mcp-service
+    ports:
+      - "8082:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+
+  rag-service:
+    image: rag-service:latest
+    container_name: rag-service
+    ports:
+      - "8083:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production

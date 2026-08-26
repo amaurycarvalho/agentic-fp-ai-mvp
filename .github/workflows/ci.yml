@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install dependencies
+        run: make install
+
+      - name: Install Semgrep (SAST)
+        run: |
+          python3 -m pip install --user semgrep
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run quality gate (lint + test + coverage + metrics + security)
+        run: make quality-gate
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/
+          if-no-files-found: warn
+
+  sonarcloud:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - name: agent-service
+            test-proj: services/agent-service/tests/AgentService.Api.Tests/AgentService.Api.Tests.csproj
+          - name: mcp-service
+            test-proj: services/mcp-service/tests/McpService.Api.Tests/McpService.Api.Tests.csproj
+          - name: rag-service
+            test-proj: services/rag-service/tests/RagService.Api.Tests/RagService.Api.Tests.csproj
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Install SonarCloud scanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: SonarCloud begin
+        run: |
+          dotnet sonarscanner begin \
+            /k:"${{ secrets.SONAR_PROJECT_KEY_PREFIX }}-${{ matrix.service.name }}" \
+            /d:sonar.host.url=https://sonarcloud.io \
+            /d:sonar.organization="${{ secrets.SONAR_ORG }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /d:sonar.cs.cobertura.reportsPaths=TestResults/**/coverage.cobertura.xml \
+            /d:sonar.coverage.exclusions=**/*Tests/**
+
+      - name: Build and test with coverage
+        run: make test-sln SLN="${{ matrix.service.test-proj }}"
+
+      - name: SonarCloud end
+        if: always()
+        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+  integration-test:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Run MCP cross-service integration tests against the stack
+        run: |
+          docker compose up -d --build --wait --wait-timeout 120
+          MCP_BASE_URL=http://localhost:8082 make test-integration
+          docker compose down
+        env:
+          ASPNETCORE_ENVIRONMENT: Production
